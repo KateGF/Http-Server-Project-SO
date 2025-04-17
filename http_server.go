@@ -1,10 +1,15 @@
 package main
 
 import (
+	"errors"
 	"fmt"
+	"log/slog"
 	"net"
+	"os"
+	"os/signal"
 	"sort"
 	"strings"
+	"syscall"
 )
 
 const DEFAULT_BUFFER_SIZE = 1024
@@ -78,7 +83,31 @@ func (server *HttpServer) Start(port int) error {
 		return err
 	}
 
-	return nil
+	sigCh := make(chan os.Signal, 1)
+	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
+
+	go func() {
+		<-sigCh
+		fmt.Println()
+		ln.Close()
+	}()
+
+	slog.Info("Server started", "address", ln.Addr().String())
+
+	for {
+		conn, err := ln.Accept()
+
+		if errors.Is(err, net.ErrClosed) {
+			slog.Info("Server stopped")
+			return nil
+		}
+
+		if err != nil {
+			return err
+		}
+
+		go server.Handle(conn)
+	}
 }
 
 func (server *HttpServer) Handle(conn net.Conn) error {

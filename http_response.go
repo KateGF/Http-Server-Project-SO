@@ -15,7 +15,7 @@ func NewHttpResponse(statusCode int, statusText string, body string) *HttpRespon
 	return &HttpResponse{
 		StatusCode: statusCode,
 		StatusText: statusText,
-		Headers:    make(map[string]string), // Inicializa el mapa de cabeceras.
+		Headers:    make(map[string]string),
 		Body:       body,
 	}
 }

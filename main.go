@@ -12,6 +12,6 @@ func main() {
 	err := server.Start(8080)
 
 	if err != nil {
-		slog.Error("Error starting or running server", err)
+		slog.Error("Error starting or running server", "error", err)
 	}
 }
