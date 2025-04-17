@@ -68,9 +68,6 @@ func MatchPath(requestPath, handlerPath string) bool {
 
 	handlerPath += "/"
 
-	// TODO: Check if requestPath ends with /
-	fmt.Printf("requestPath: %s, handlerPath: %s\n", requestPath, handlerPath)
-
 	return strings.HasPrefix(requestPath, handlerPath)
 }
 

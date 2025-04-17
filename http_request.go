@@ -106,8 +106,8 @@ func ReadRequest(conn net.Conn) (*HttpRequest, error) {
 // Analiza la parte de las cabeceras de una solicitud HTTP (como string).
 // Devuelve un puntero a HttpRequest (sin el cuerpo) o un error.
 func ParseRequest(headersPart string) (*HttpRequest, error) {
-	// Encuentra el final de las cabeceras (doble salto de línea)
-	headerEndIndex := strings.Index(headersPart, "\n\n")
+	// Encuentra el final de las cabeceras (doble salto de línea CRLF)
+	headerEndIndex := strings.Index(headersPart, "\r\n\r\n")
 	if headerEndIndex == -1 {
 		return nil, fmt.Errorf("no header end")
 	}
@@ -115,8 +115,8 @@ func ParseRequest(headersPart string) (*HttpRequest, error) {
 	// Extrae la parte de las cabeceras
 	headerPart := headersPart[:headerEndIndex]
 
-	// Divide las cabeceras en líneas individuales
-	lines := strings.Split(headerPart, "\n")
+	// Divide las cabeceras en líneas individuales usando CRLF
+	lines := strings.Split(headerPart, "\r\n")
 	if len(lines) < 1 {
 		return nil, fmt.Errorf("no start line")
 	}
