@@ -78,7 +78,6 @@ func (server *HttpServer) Start(port int) error {
 	server.SortHandlers()
 
 	ln, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
-
 	if err != nil {
 		return err
 	}
@@ -106,12 +105,63 @@ func (server *HttpServer) Start(port int) error {
 			return err
 		}
 
-		go server.Handle(conn)
+		go server.HandleWithError(conn)
+	}
+}
+
+func (server *HttpServer) HandleWithError(conn net.Conn) {
+	err := server.Handle(conn)
+	if err != nil {
+		slog.Error("Error", "error", err)
 	}
 }
 
 func (server *HttpServer) Handle(conn net.Conn) error {
 	defer conn.Close()
+
+	request, err := ReadRequest(conn)
+	if err != nil {
+		return err
+	}
+
+	slog.Info("Request", "address", conn.RemoteAddr().String(), "method", request.Method, "path", request.Target.Path)
+
+	handled := false
+
+	for _, handler := range server.Handlers {
+		if request.Method != handler.Method || !MatchPath(request.Target.Path, handler.Path) {
+			continue
+		}
+
+		response, err := handler.Handle(request)
+		if err != nil {
+			return err
+		}
+
+		err = response.WriteResponse(conn)
+		if err != nil {
+			return err
+		}
+
+		handled = true
+		break
+	}
+
+	if handled {
+		return nil
+	}
+
+	response := &HttpResponse{
+		StatusCode: 404,
+		StatusText: "Not Found",
+		Headers:    map[string]string{},
+		Body:       "404 Not Found",
+	}
+
+	err = response.WriteResponse(conn)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

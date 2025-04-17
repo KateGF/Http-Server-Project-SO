@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"log/slog"
+	"net"
+)
 
 // Representa una respuesta HTTP.
 type HttpResponse struct {
@@ -89,4 +93,15 @@ func (response *HttpResponse) String() string {
 
 	// Construye la cadena de respuesta HTTP completa.
 	return fmt.Sprintf("HTTP/1.1 %d %s\r\n%s\r\n%s", response.StatusCode, response.StatusText, headersStr, response.Body)
+}
+
+func (response *HttpResponse) WriteResponse(conn net.Conn) error {
+	slog.Info("Response", "address", conn.RemoteAddr().String(), "status_code", response.StatusCode, "status_text", response.StatusText)
+
+	_, err := conn.Write([]byte(response.String()))
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

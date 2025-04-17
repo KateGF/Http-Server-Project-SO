@@ -40,13 +40,13 @@ func ReadRequest(conn net.Conn) (*HttpRequest, error) {
 	for {
 		line, err := reader.ReadString('\n')
 
-		if err != nil {
-			// Si es fin de archivo (EOF), puede ser normal si la conexión se cierra
-			if errors.Is(err, io.EOF) {
-				break
-			}
+		// Si es fin de archivo (EOF), puede ser normal si la conexión se cierra
+		if errors.Is(err, io.EOF) {
+			break
+		}
 
-			// Otro error durante la lectura
+		// Otro error durante la lectura
+		if err != nil {
 			return nil, err
 		}
 
