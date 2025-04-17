@@ -68,7 +68,7 @@ func ReadRequest(conn net.Conn) (*HttpRequest, error) {
 	}
 
 	// Une las líneas de la cabecera y añade el doble salto de línea final
-	headersPart := strings.Join(lines, "\n") + "\n\n"
+	headersPart := strings.Join(lines, "\r\n") + "\r\n\r\n"
 
 	// Parsea la parte de las cabeceras para obtener la estructura HttpRequest inicial
 	request, err := ParseRequest(headersPart)
