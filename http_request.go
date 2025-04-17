@@ -53,14 +53,14 @@ func ReadRequest(conn net.Conn) (*HttpRequest, error) {
 	}
 
 	if len(lines) == 0 {
-		return nil, fmt.Errorf("")
+		return nil, fmt.Errorf("empty request")
 	}
 
 	headersPart := strings.Join(lines, "\n") + "\n\n"
 
 	request, err := ParseRequest(headersPart)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("can't parse request: %w", err)
 	}
 
 	if contentLengthStr, ok := request.Header["Content-Length"]; ok {
@@ -68,7 +68,7 @@ func ReadRequest(conn net.Conn) (*HttpRequest, error) {
 
 		_, err := fmt.Sscan(contentLengthStr, &contentLength)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("bad content length format: %w", err)
 		}
 
 		if contentLength > 0 {
@@ -76,7 +76,7 @@ func ReadRequest(conn net.Conn) (*HttpRequest, error) {
 
 			_, err := io.ReadAtLeast(reader, body, contentLength)
 			if err != nil {
-				return nil, err
+				return nil, fmt.Errorf("can't read body: %w", err)
 			}
 
 			request.Body = string(body)
@@ -89,34 +89,34 @@ func ReadRequest(conn net.Conn) (*HttpRequest, error) {
 func ParseRequest(headersPart string) (*HttpRequest, error) {
 	headerEndIndex := strings.Index(headersPart, "\n\n")
 	if headerEndIndex == -1 {
-		return nil, fmt.Errorf("")
+		return nil, fmt.Errorf("no header end")
 	}
 
 	headerPart := headersPart[:headerEndIndex]
 
 	lines := strings.Split(headerPart, "\n")
 	if len(lines) < 1 {
-		return nil, fmt.Errorf("")
+		return nil, fmt.Errorf("no start line")
 	}
 
 	start := strings.SplitN(lines[0], " ", 3)
 	if len(start) < 2 {
-		return nil, fmt.Errorf("")
+		return nil, fmt.Errorf("no method or target")
 	}
 
 	method := start[0]
 	if method == "" {
-		return nil, fmt.Errorf("")
+		return nil, fmt.Errorf("no method")
 	}
 
 	targetStr := start[1]
 	if targetStr == "" {
-		return nil, fmt.Errorf("")
+		return nil, fmt.Errorf("no target")
 	}
 
 	target, err := url.Parse(targetStr)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("bad target format: %w", err)
 	}
 
 	headers := make(map[string]string)
