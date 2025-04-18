@@ -6,10 +6,6 @@ import (
 	"testing"
 )
 
-type Test struct {
-	input string
-}
-
 func TestReadRequestPass(t *testing.T) {
 	func(t *testing.T) {
 		// Arrange
@@ -52,19 +48,19 @@ func TestReadRequestPass(t *testing.T) {
 	}(t)
 }
 
-var RejectReadRequestTests = []Test{
+var RejectReadRequestTests = []string{
 	// empty request
-	{""},
+	"",
 	// can't parse request
-	{"\r\n\r\n"},
+	"\r\n\r\n",
 	// bad content length format
-	{"GET / HTTP/1.1\r\nContent-Length: A\r\n\r\nContent"},
+	"GET / HTTP/1.1\r\nContent-Length: A\r\n\r\nContent",
 	// can't read body
-	{"GET / HTTP/1.1\r\nContent-Length: 7\r\n\r\n"},
+	"GET / HTTP/1.1\r\nContent-Length: 7\r\n\r\n",
 }
 
 func TestReadRequestReject(t *testing.T) {
-	for i, test := range RejectReadRequestTests {
+	for i, input := range RejectReadRequestTests {
 		t.Run(fmt.Sprintf("TestReadRequestReject %d", i), func(t *testing.T) {
 			// Arrange
 			conn1, conn2 := net.Pipe()
@@ -72,7 +68,7 @@ func TestReadRequestReject(t *testing.T) {
 			defer conn2.Close()
 
 			go func() {
-				conn1.Write([]byte(test.input))
+				conn1.Write([]byte(input))
 				conn1.Close()
 			}()
 
@@ -91,25 +87,25 @@ func TestReadRequestReject(t *testing.T) {
 	}
 }
 
-var RejectParseRequestTests = []Test{
+var RejectParseRequestTests = []string{
 	// no header end
-	{"GET / HTTP/1.1\r\n"},
+	"GET / HTTP/1.1\r\n",
 	// no start line
-	{"\r\n\r\n"},
+	"\r\n\r\n",
 	// no method or target
-	{"HTTP/1.1\r\n\r\n"},
+	"HTTP/1.1\r\n\r\n",
 	// no target
-	{"GET\r\n\r\n"},
+	"GET\r\n\r\n",
 	// bad target format
-	{"GET : HTTP/1.1\r\n\r\n"},
+	"GET : HTTP/1.1\r\n\r\n",
 }
 
 func TestParseRequestReject(t *testing.T) {
 	// Expect to reject
-	for _, test := range RejectParseRequestTests {
-		t.Run(fmt.Sprintf("TestParseRequestReject %s", test.input), func(t *testing.T) {
+	for i, input := range RejectParseRequestTests {
+		t.Run(fmt.Sprintf("TestParseRequestReject %d", i), func(t *testing.T) {
 			// Act
-			request, err := ParseRequest(test.input)
+			request, err := ParseRequest(input)
 
 			// Assert
 			if request != nil {
