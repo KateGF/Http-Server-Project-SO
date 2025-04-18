@@ -25,7 +25,8 @@ type Handler struct {
 
 // Representa el servidor HTTP.
 type HttpServer struct {
-	Handlers []Handler // Lista de manejadores registrados
+	Handlers []Handler    // Lista de manejadores registrados
+	Listener net.Listener // Listener para aceptar conexiones
 }
 
 // Crea una nueva instancia de HttpServer.
@@ -101,6 +102,9 @@ func (server *HttpServer) Start(port int) error {
 		return err
 	}
 
+	// Asigna el listener al servidor.
+	server.Listener = ln
+
 	// Canal para recibir señales del sistema operativo (SIGINT, SIGTERM).
 	sigCh := make(chan os.Signal, 1)
 	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
@@ -111,7 +115,7 @@ func (server *HttpServer) Start(port int) error {
 		<-sigCh
 		fmt.Println()
 		// Cierra el listener para detener la aceptación de nuevas conexiones.
-		ln.Close()
+		server.Stop()
 	}()
 
 	slog.Info("Server started", "address", ln.Addr().String())
@@ -135,6 +139,13 @@ func (server *HttpServer) Start(port int) error {
 		// Maneja cada conexión en una goroutine separada.
 		// HandleWithError se asegura de que los errores se registren.
 		go server.HandleWithError(conn)
+	}
+}
+
+// Detiene el servidor HTTP.
+func (server *HttpServer) Stop() {
+	if server.Listener != nil {
+		server.Listener.Close()
 	}
 }
 
