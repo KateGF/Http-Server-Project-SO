@@ -68,11 +68,10 @@ func TestHttpResponseText(t *testing.T) {
 		t.Errorf("Expected body to be Text, not %s", response.Body)
 	}
 
-	expected1 := "HTTP/1.1 200 OK\r\nContent-Length: 4\r\nContent-Type: text/plain\r\n\r\nText"
-	expected2 := "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: 4\r\n\r\nText"
+	expected := "HTTP/1.1 200 OK\r\nContent-Length: 4\r\nContent-Type: text/plain\r\n\r\nText"
 
-	if response.String() != expected1 && response.String() != expected2 {
-		t.Errorf("Expected message to be %s, not %s", expected2, response.String())
+	if response.String() != expected {
+		t.Errorf("Expected message to be %s, not %s", expected, response.String())
 	}
 }
 
@@ -85,11 +84,10 @@ func TestHttpResponseJson(t *testing.T) {
 		t.Errorf("Expected body to be {\"k\": \"v\"}, not %s", response.Body)
 	}
 
-	expected1 := "HTTP/1.1 200 OK\r\nContent-Length: 10\r\nContent-Type: application/json\r\n\r\n{\"k\": \"v\"}"
-	expected2 := "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: 10\r\n\r\n{\"k\": \"v\"}"
+	expected := "HTTP/1.1 200 OK\r\nContent-Length: 10\r\nContent-Type: application/json\r\n\r\n{\"k\": \"v\"}"
 
-	if response.String() != expected1 && response.String() != expected2 {
-		t.Errorf("Expected message to be %s, not %s", expected2, response.String())
+	if response.String() != expected {
+		t.Errorf("Expected message to be %s, not %s", expected, response.String())
 	}
 }
 
