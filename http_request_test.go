@@ -7,45 +7,43 @@ import (
 )
 
 func TestReadRequestPass(t *testing.T) {
-	func(t *testing.T) {
-		// Arrange
-		conn1, conn2 := net.Pipe()
+	// Arrange
+	conn1, conn2 := net.Pipe()
 
-		defer conn2.Close()
+	defer conn2.Close()
 
-		go func() {
-			conn1.Write([]byte("GET / HTTP/1.1\r\nContent-Length: 7\r\nSkip\r\n: Skip\r\n\r\nContent"))
-			conn1.Close()
-		}()
+	go func() {
+		conn1.Write([]byte("GET / HTTP/1.1\r\nContent-Length: 7\r\nSkip\r\n: Skip\r\n\r\nContent"))
+		conn1.Close()
+	}()
 
-		// Act
-		request, err := ReadRequest(conn2)
+	// Act
+	request, err := ReadRequest(conn2)
 
-		// Assert
-		if err != nil {
-			t.Fatalf("Expected no error, %v", err)
-		}
+	// Assert
+	if err != nil {
+		t.Fatalf("Expected no error, %v", err)
+	}
 
-		if request.Method != "GET" {
-			t.Errorf("Expected method to be GET, not %s", request.Method)
-		}
+	if request.Method != "GET" {
+		t.Errorf("Expected method to be GET, not %s", request.Method)
+	}
 
-		if request.Target.Path != "/" {
-			t.Errorf("Expected target path to be /, not %s", request.Target.Path)
-		}
+	if request.Target.Path != "/" {
+		t.Errorf("Expected target path to be /, not %s", request.Target.Path)
+	}
 
-		if len(request.Headers) != 1 {
-			t.Errorf("Expected 1 header, not %d", len(request.Headers))
-		}
+	if len(request.Headers) != 1 {
+		t.Errorf("Expected 1 header, not %d", len(request.Headers))
+	}
 
-		if request.Headers["Content-Length"] != "7" {
-			t.Errorf("Expected Content-Length to be 7, not %s", request.Headers["Content-Length"])
-		}
+	if request.Headers["Content-Length"] != "7" {
+		t.Errorf("Expected Content-Length to be 7, not %s", request.Headers["Content-Length"])
+	}
 
-		if request.Body != "Content" {
-			t.Errorf("Expected body to be Content, not %s", request.Body)
-		}
-	}(t)
+	if request.Body != "Content" {
+		t.Errorf("Expected body to be Content, not %s", request.Body)
+	}
 }
 
 var RejectReadRequestTests = []string{
@@ -101,7 +99,6 @@ var RejectParseRequestTests = []string{
 }
 
 func TestParseRequestReject(t *testing.T) {
-	// Expect to reject
 	for i, input := range RejectParseRequestTests {
 		t.Run(fmt.Sprintf("TestParseRequestReject %d", i), func(t *testing.T) {
 			// Act

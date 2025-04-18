@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log/slog"
 	"net"
+	"sort"
 )
 
 // Representa una respuesta HTTP.
@@ -86,9 +87,14 @@ func (response *HttpResponse) String() string {
 	response.SetHeader("Content-Length", fmt.Sprint(contentLength))
 
 	// Formatea las cabeceras.
+	keys := make([]string, 0, len(response.Headers))
+	for key := range response.Headers {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
 	headersStr := ""
-	for key, value := range response.Headers {
-		headersStr += fmt.Sprintf("%s: %s\r\n", key, value)
+	for _, key := range keys {
+		headersStr += fmt.Sprintf("%s: %s\r\n", key, response.Headers[key])
 	}
 
 	// Construye la cadena de respuesta HTTP completa.
