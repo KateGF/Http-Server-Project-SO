@@ -13,19 +13,19 @@ import (
 // Representa una solicitud HTTP recibida.
 // Contiene el método, el objetivo (URL), las cabeceras y el cuerpo de la solicitud.
 type HttpRequest struct {
-	Method string            // Método HTTP (GET, POST, etc.)
-	Target *url.URL          // URL objetivo de la solicitud
-	Header map[string]string // Cabeceras HTTP como un mapa de clave-valor
-	Body   string            // Cuerpo de la solicitud (si existe)
+	Method  string            // Método HTTP (GET, POST, etc.)
+	Target  *url.URL          // URL objetivo de la solicitud
+	Headers map[string]string // Cabeceras HTTP como un mapa de clave-valor
+	Body    string            // Cuerpo de la solicitud (si existe)
 }
 
 // Crea una nueva instancia de HttpRequest.
 func NewHttpRequest(method string, target *url.URL, header map[string]string, body string) *HttpRequest {
 	return &HttpRequest{
-		Method: method,
-		Target: target,
-		Header: header,
-		Body:   body,
+		Method:  method,
+		Target:  target,
+		Headers: header,
+		Body:    body,
 	}
 }
 
@@ -77,7 +77,7 @@ func ReadRequest(conn net.Conn) (*HttpRequest, error) {
 	}
 
 	// Comprueba si existe la cabecera Content-Length para leer el cuerpo
-	if contentLengthStr, ok := request.Header["Content-Length"]; ok {
+	if contentLengthStr, ok := request.Headers["Content-Length"]; ok {
 		var contentLength int
 
 		// Convierte el valor de Content-Length a entero
