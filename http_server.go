@@ -63,8 +63,15 @@ func (server *HttpServer) SortHandlers() {
 		iCount := strings.Count(server.Handlers[i].Path, "/")
 		jCount := strings.Count(server.Handlers[j].Path, "/")
 
-		// Ordena de forma descendente por el número de segmentos.
-		return iCount > jCount
+		if iCount != jCount {
+			// Ordena de forma descendente por el número de segmentos.
+			return iCount > jCount
+		}
+
+		iLen := len(server.Handlers[i].Path)
+		jLen := len(server.Handlers[j].Path)
+
+		return iLen > jLen
 	})
 }
 
