@@ -35,6 +35,11 @@ func NotFound() *HttpResponse {
 	return NewHttpResponse(404, "Not Found", "")
 }
 
+// Crea una respuesta HTTP 400 Bad Request predeterminada.
+func BadRequest() *HttpResponse {
+	return NewHttpResponse(400, "Bad Request", "")
+}
+
 // Establece el código de estado de la respuesta.
 func (response *HttpResponse) SetStatusCode(code int) *HttpResponse {
 	response.StatusCode = code
