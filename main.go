@@ -3,12 +3,13 @@ package main
 import "log/slog"
 
 func main() {
+	// Crea una nueva instancia del servidor HTTP.
 	server := NewHttpServer()
 
-	server.Get("/", func(request *HttpRequest) (*HttpResponse, error) {
-		return Ok().Text("!"), nil
-	})
+	// Registra un manejador para la ruta GET "/fibonacci".
+	server.Get("/fibonacci", FibonacciHandler)
 
+	// Inicia el servidor en el puerto 8080.
 	err := server.Start(8080)
 
 	if err != nil {
