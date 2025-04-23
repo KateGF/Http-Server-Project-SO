@@ -17,10 +17,7 @@ import (
 // - Crea el archivo con el nombre especificado.
 func CreateFile(filename string, content string, repeat int) error {
 	// Obtener el directorio actual
-	wd, err := os.Getwd()
-	if err != nil {
-		return err
-	}
+	wd, _ := os.Getwd()
 
 	// Construir la ruta completa del archivo
 	path := filepath.Join(wd, filename)
@@ -30,7 +27,7 @@ func CreateFile(filename string, content string, repeat int) error {
 	}
 
 	// Crear todos los directorios necesarios en la ruta
-	err = os.MkdirAll(filepath.Dir(path), os.ModePerm)
+	err := os.MkdirAll(filepath.Dir(path), os.ModePerm)
 	if err != nil {
 		return err
 	}
@@ -62,10 +59,7 @@ func CreateFile(filename string, content string, repeat int) error {
 // - Elimina el archivo con el nombre especificado.
 func DeleteFile(filename string) error {
 	// Obtener el directorio de trabajo actual
-	wd, err := os.Getwd()
-	if err != nil {
-		return err
-	}
+	wd, _ := os.Getwd()
 
 	// Construir la ruta completa del archivo
 	path := filepath.Join(wd, filename)
@@ -75,7 +69,7 @@ func DeleteFile(filename string) error {
 	}
 
 	// Eliminar el archivo
-	err = os.Remove(path)
+	err := os.Remove(path)
 	if err != nil {
 		return err
 	}
