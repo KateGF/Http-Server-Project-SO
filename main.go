@@ -9,6 +9,12 @@ func main() {
 	// Registra un manejador para la ruta GET "/fibonacci".
 	server.Get("/fibonacci", FibonacciHandler)
 
+	// Registra un manejador para la ruta POST "/createfile".
+	server.Post("/createfile", CreateFileHandler)
+
+	// Registra un manejador para la ruta DELETE "/deletefile".
+	server.Delete("/deletefile", DeleteFileHandler)
+
 	// Inicia el servidor en el puerto 8080.
 	err := server.Start(8080)
 

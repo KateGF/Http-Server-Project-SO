@@ -57,6 +57,11 @@ func (server *HttpServer) Post(path string, handle Handle) {
 	server.AddHandler("POST", path, handle)
 }
 
+// Un atajo para agregar un manejador para el método DELETE.
+func (server *HttpServer) Delete(path string, handle Handle) {
+	server.AddHandler("DELETE", path, handle)
+}
+
 // Ordena los manejadores por la especificidad de la ruta (más segmentos primero).
 func (server *HttpServer) SortHandlers() {
 	sort.Slice(server.Handlers, func(i, j int) bool {
