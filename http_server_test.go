@@ -105,6 +105,10 @@ func TestStart(t *testing.T) {
 		return Ok(), nil
 	})
 
+	server.Delete("/delete", func(request *HttpRequest) (*HttpResponse, error) {
+		return Ok(), nil
+	})
+
 	port := rand.IntN(1000) + 8080
 
 	go func() {
