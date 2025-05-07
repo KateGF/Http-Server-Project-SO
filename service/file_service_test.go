@@ -32,6 +32,7 @@ func TestCreateFileHandler(t *testing.T) {
 		{"temp/test.txt", "name=temp/test.txt&content=A&repeat=10", "AAAAAAAAAA", true, func() {
 			os.WriteFile("temp/test.txt", []byte("test"), os.ModePerm)
 		}},
+		{"../temp/test.txt", "name=../test.txt&content=A&repeat=10", "", true, nil},
 	}
 
 	for i, tt := range tests {
@@ -90,6 +91,7 @@ func TestDeleteFileHandler(t *testing.T) {
 		}},
 		{"temp/test.txt", "", true, nil},
 		{"temp/test.txt", "name=temp/test.txt", true, nil},
+		{"../temp/test.txt", "name=../test.txt", true, nil},
 	}
 
 	for i, tt := range tests {

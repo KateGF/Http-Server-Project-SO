@@ -55,6 +55,12 @@ var RejectReadRequestTests = []string{
 	"GET / HTTP/1.0\r\nContent-Length: A\r\n\r\nContent",
 	// can't read body
 	"GET / HTTP/1.0\r\nContent-Length: 7\r\n\r\n",
+	// post request without content length
+	"POST / HTTP/1.0\r\n\r\n",
+	// bad method
+	"BAD / HTTP/1.0\r\n\r\n",
+	// bad version
+	"GET / HTTP/0.0\r\n\r\n",
 }
 
 func TestReadRequestReject(t *testing.T) {
