@@ -10,6 +10,18 @@ import (
 	"strings"
 )
 
+var HTTP_METHODS = map[string]bool{
+	"GET":     true,
+	"HEAD":    true,
+	"POST":    true,
+	"PUT":     true,
+	"DELETE":  true,
+	"CONNECT": true,
+	"OPTIONS": true,
+	"TRACE":   true,
+	"PATCH":   true,
+}
+
 // Representa una solicitud HTTP recibida.
 // Contiene el método, el objetivo (URL), las cabeceras y el cuerpo de la solicitud.
 type HttpRequest struct {
@@ -133,6 +145,11 @@ func ParseRequest(headersPart string) (*HttpRequest, error) {
 		return nil, fmt.Errorf("no method")
 	}
 
+	// Comprueba si el método es válido
+	if _, ok := HTTP_METHODS[method]; !ok {
+		return nil, fmt.Errorf("bad method: %s", method)
+	}
+
 	// Extrae el target (URL)
 	targetStr := start[1]
 	if targetStr == "" {
@@ -143,6 +160,14 @@ func ParseRequest(headersPart string) (*HttpRequest, error) {
 	target, err := url.Parse(targetStr)
 	if err != nil {
 		return nil, fmt.Errorf("bad target format: %w", err)
+	}
+
+	// Extrae la versión
+	version := start[2]
+
+	// Comprueba si la versión es válida
+	if version != "HTTP/1.0" {
+		return nil, fmt.Errorf("bad version: %s", version)
 	}
 
 	// Crea un mapa para almacenar las cabeceras
