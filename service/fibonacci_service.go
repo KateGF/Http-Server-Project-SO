@@ -5,9 +5,6 @@ import (
 	"strconv"
 )
 
-// Almacena los números de Fibonacci ya calculados para evitar recálculos.
-var memo = map[int]int{}
-
 // Calcula el n-ésimo número de Fibonacci utilizando recursión con memoización.
 func Fibonacci(num int) int {
 	// Casos base de la recursión.
@@ -18,15 +15,12 @@ func Fibonacci(num int) int {
 		return 1
 	}
 
-	// Verifica si el resultado ya está en la caché (memoización).
-	if v, exists := memo[num]; exists {
-		return v
+	a, b := 0, 1
+	for i := 2; i <= num; i++ {
+		a, b = b, a+b
 	}
 
-	// Si no está en caché, calcula recursivamente, almacena en caché y retorna.
-	memo[num] = Fibonacci(num-1) + Fibonacci(num-2)
-
-	return memo[num]
+	return b
 }
 
 // Extrae el parámetro 'num' de la consulta, calcula el número de Fibonacci correspondiente y retorna la respuesta HTTP.
