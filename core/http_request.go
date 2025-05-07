@@ -116,9 +116,6 @@ func ParseRequest(headersPart string) (*HttpRequest, error) {
 
 	// Divide las cabeceras en líneas individuales usando CRLF
 	lines := strings.Split(headerPart, "\r\n")
-	if len(lines) < 1 {
-		return nil, fmt.Errorf("no start line")
-	}
 
 	// Parsea la línea de inicio (ej: "GET /path HTTP/1.0")
 	start := strings.SplitN(lines[0], " ", 3)
@@ -128,9 +125,6 @@ func ParseRequest(headersPart string) (*HttpRequest, error) {
 
 	// Extrae el método
 	method := start[0]
-	if method == "" {
-		return nil, fmt.Errorf("no method")
-	}
 
 	// Comprueba si el método es válido
 	if _, ok := HTTP_METHODS[method]; !ok {
@@ -139,9 +133,6 @@ func ParseRequest(headersPart string) (*HttpRequest, error) {
 
 	// Extrae el target (URL)
 	targetStr := start[1]
-	if targetStr == "" {
-		return nil, fmt.Errorf("no target")
-	}
 
 	// Parsea el target como una URL
 	target, err := url.Parse(targetStr)
