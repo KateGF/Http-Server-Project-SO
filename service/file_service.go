@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 )
 
 // Crea un archivo en el directorio actual.
@@ -22,6 +23,12 @@ func CreateFile(filename string, content string, repeat int) error {
 
 	// Construir la ruta completa del archivo
 	path := filepath.Join(wd, filename)
+
+	// Verificar si la ruta es absoluta
+	if !filepath.IsAbs(path) || !strings.HasPrefix(path, wd) {
+		return fmt.Errorf("path is not absolute: %s", path)
+	}
+
 	// Verificar si el archivo ya existe
 	if _, err := os.Stat(path); err == nil {
 		return fmt.Errorf("file already exists: %s", path)
@@ -64,6 +71,12 @@ func DeleteFile(filename string) error {
 
 	// Construir la ruta completa del archivo
 	path := filepath.Join(wd, filename)
+
+	// Verificar si la ruta es absoluta
+	if !filepath.IsAbs(path) || !strings.HasPrefix(path, wd) {
+		return fmt.Errorf("path is not absolute: %s", path)
+	}
+
 	// Verificar si el archivo existe
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		return fmt.Errorf("file does not exist: %s", path)
