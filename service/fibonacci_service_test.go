@@ -1,7 +1,8 @@
-package main
+package service
 
 import (
 	"fmt"
+	"httpserver/core"
 	"net/url"
 	"testing"
 )
@@ -53,10 +54,7 @@ func TestFibonacciHandler(t *testing.T) {
 			// Arrange
 			target, _ := url.Parse(fmt.Sprintf("/fibonacci?num=%s", tt.num))
 
-			request := &HttpRequest{
-				Method: "GET",
-				Target: target,
-			}
+			request := core.NewHttpRequest("GET", target, map[string]string{}, "")
 
 			// Act
 			response, err := FibonacciHandler(request)

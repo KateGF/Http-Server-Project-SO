@@ -1,8 +1,9 @@
-package main
+package service
 
 import (
 	"bufio"
 	"fmt"
+	"httpserver/core"
 	"log/slog"
 	"os"
 	"path/filepath"
@@ -80,32 +81,32 @@ func DeleteFile(filename string) error {
 // Maneja las solicitudes HTTP para crear archivos.
 // Extrae los parámetros 'name', 'content' y 'repeat' de la consulta y valida los parámetros.
 // Devuelve una respuesta HTTP indicando éxito o error.
-func CreateFileHandler(request *HttpRequest) (*HttpResponse, error) {
+func CreateFileHandler(request *core.HttpRequest) (*core.HttpResponse, error) {
 	// Obtener parámetros de la consulta
 	name := request.Target.Query().Get("name")
 	if name == "" {
-		return BadRequest().Text("name is required"), nil
+		return core.BadRequest().Text("name is required"), nil
 	}
 
 	content := request.Target.Query().Get("content")
 	if content == "" {
-		return BadRequest().Text("content is required"), nil
+		return core.BadRequest().Text("content is required"), nil
 	}
 
 	repeatStr := request.Target.Query().Get("repeat")
 	if repeatStr == "" {
-		return BadRequest().Text("repeat is required"), nil
+		return core.BadRequest().Text("repeat is required"), nil
 	}
 
 	// Convertir 'repeat' a entero
 	repeat, err := strconv.Atoi(repeatStr)
 	if err != nil {
-		return BadRequest().Text("repeat must be a number"), nil
+		return core.BadRequest().Text("repeat must be a number"), nil
 	}
 
 	// Validar que 'repeat' sea positivo
 	if repeat < 1 {
-		return BadRequest().Text("repeat must be greater than 0"), nil
+		return core.BadRequest().Text("repeat must be greater than 0"), nil
 	}
 
 	// Llamar a la función para crear el archivo
@@ -113,21 +114,21 @@ func CreateFileHandler(request *HttpRequest) (*HttpResponse, error) {
 	if err != nil {
 		// Registrar el error y devolver una respuesta de error interno del servidor
 		slog.Error("Error creating file", "error", err)
-		return NewHttpResponse(500, "Internal Server Error", "Error creating file"), nil
+		return core.NewHttpResponse(500, "Internal Server Error", "Error creating file"), nil
 	}
 
 	// Devolver una respuesta de éxito
-	return Ok().Text("File created successfully"), nil
+	return core.Ok().Text("File created successfully"), nil
 }
 
 // Maneja las solicitudes HTTP para eliminar archivos.
 // Extrae el parámetro 'name' de la consulta y valida el parámetro.
 // Devuelve una respuesta HTTP indicando éxito o error.
-func DeleteFileHandler(request *HttpRequest) (*HttpResponse, error) {
+func DeleteFileHandler(request *core.HttpRequest) (*core.HttpResponse, error) {
 	// Obtener el parámetro 'name' de la consulta
 	name := request.Target.Query().Get("name")
 	if name == "" {
-		return BadRequest().Text("name is required"), nil
+		return core.BadRequest().Text("name is required"), nil
 	}
 
 	// Llamar a la función para eliminar el archivo
@@ -135,9 +136,9 @@ func DeleteFileHandler(request *HttpRequest) (*HttpResponse, error) {
 	if err != nil {
 		// Registrar el error y devolver una respuesta de error interno del servidor
 		slog.Error("Error deleting file", "error", err)
-		return NewHttpResponse(500, "Internal Server Error", "Error deleting file"), nil
+		return core.NewHttpResponse(500, "Internal Server Error", "Error deleting file"), nil
 	}
 
 	// Devolver una respuesta de éxito
-	return Ok().Text("File deleted successfully"), nil
+	return core.Ok().Text("File deleted successfully"), nil
 }

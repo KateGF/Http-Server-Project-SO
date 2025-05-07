@@ -1,7 +1,8 @@
-package main
+package service
 
 import (
 	"fmt"
+	"httpserver/core"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -44,10 +45,7 @@ func TestCreateFileHandler(t *testing.T) {
 
 			// Arrange
 			target, _ := url.Parse(fmt.Sprintf("/createfile?%s", tt.query))
-			request := &HttpRequest{
-				Method: "POST",
-				Target: target,
-			}
+			request := core.NewHttpRequest("POST", target, map[string]string{}, "")
 
 			// Act
 			response, _ := CreateFileHandler(request)
@@ -105,10 +103,7 @@ func TestDeleteFileHandler(t *testing.T) {
 
 			// Arrange
 			target, _ := url.Parse(fmt.Sprintf("/deletefile?%s", tt.query))
-			request := &HttpRequest{
-				Method: "DELETE",
-				Target: target,
-			}
+			request := core.NewHttpRequest("DELETE", target, map[string]string{}, "")
 
 			// Act
 			response, _ := DeleteFileHandler(request)
