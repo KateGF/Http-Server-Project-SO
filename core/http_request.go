@@ -41,7 +41,7 @@ func NewHttpRequest(method string, target *url.URL, header map[string]string, bo
 	}
 }
 
-// lee una solicitud HTTP completa desde una conexión de red.
+// Lee una solicitud HTTP completa desde una conexión de red.
 // Devuelve un puntero a HttpRequest o un error si ocurre algún problema.
 func ReadRequest(conn net.Conn) (*HttpRequest, error) {
 	lines := make([]string, 0)
@@ -88,28 +88,15 @@ func ReadRequest(conn net.Conn) (*HttpRequest, error) {
 		return nil, fmt.Errorf("can't parse request: %w", err)
 	}
 
-	// Comprueba si existe la cabecera Content-Length para leer el cuerpo
-	if contentLengthStr, ok := request.Headers["Content-Length"]; ok {
-		var contentLength int
+	// Si el método es POST, comprueba si hay un Content-Length
+	if _, ok := request.Headers["Content-Length"]; request.Method == "POST" && !ok {
+		return nil, fmt.Errorf("post request without content length")
+	}
 
-		// Convierte el valor de Content-Length a entero
-		_, err := fmt.Sscan(contentLengthStr, &contentLength)
-		if err != nil {
-			return nil, fmt.Errorf("bad content length format: %w", err)
-		}
-
-		// Si hay longitud de contenido, lee el cuerpo
-		if contentLength > 0 {
-			body := make([]byte, contentLength)
-
-			// Lee exactamente contentLength bytes desde el reader
-			_, err := io.ReadAtLeast(reader, body, contentLength)
-			if err != nil {
-				return nil, fmt.Errorf("can't read body: %w", err)
-			}
-
-			request.Body = string(body)
-		}
+	// Parsea el cuerpo de la solicitud si existe
+	err = ParseBody(request, reader)
+	if err != nil {
+		return nil, err
 	}
 
 	return request, nil
@@ -198,4 +185,37 @@ func ParseRequest(headersPart string) (*HttpRequest, error) {
 
 	// Crea y devuelve el objeto HttpRequest con los datos parseados
 	return NewHttpRequest(method, target, headers, body), nil
+}
+
+// Parsea el cuerpo de la solicitud HTTP si existe.
+func ParseBody(request *HttpRequest, reader *bufio.Reader) error {
+	// Comprueba si existe la cabecera Content-Length para leer el cuerpo
+	contentLengthStr, ok := request.Headers["Content-Length"]
+	if !ok {
+		return nil
+	}
+
+	// Convierte el valor de Content-Length a entero
+	var contentLength int
+	_, err := fmt.Sscan(contentLengthStr, &contentLength)
+	if err != nil {
+		return fmt.Errorf("bad content length format: %w", err)
+	}
+
+	// Si hay longitud de contenido, lee el cuerpo
+	if contentLength <= 0 {
+		return nil
+	}
+
+	body := make([]byte, contentLength)
+
+	// Lee exactamente contentLength bytes desde el reader
+	_, err = io.ReadAtLeast(reader, body, contentLength)
+	if err != nil {
+		return fmt.Errorf("can't read body: %w", err)
+	}
+
+	request.Body = string(body)
+
+	return nil
 }
