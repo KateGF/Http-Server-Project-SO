@@ -129,7 +129,7 @@ func TestStart(t *testing.T) {
 		}
 		defer conn.Close()
 
-		fmt.Fprintf(conn, "GET /get HTTP/1.1\r\nHost: localhost:%d\r\n\r\n", port)
+		fmt.Fprintf(conn, "GET /get HTTP/1.0\r\nHost: localhost:%d\r\n\r\n", port)
 
 		close(ready)
 	}()
@@ -162,7 +162,7 @@ func TestStartNotFound(t *testing.T) {
 		}
 		defer conn.Close()
 
-		fmt.Fprintf(conn, "GET /get HTTP/1.1\r\nHost: localhost:%d\r\n\r\n", port)
+		fmt.Fprintf(conn, "GET /get HTTP/1.0\r\nHost: localhost:%d\r\n\r\n", port)
 
 		close(ready)
 	}()
@@ -199,7 +199,7 @@ func TestStartUnknownError(t *testing.T) {
 		}
 		defer conn.Close()
 
-		fmt.Fprintf(conn, "GET /get HTTP/1.1\r\nHost: localhost:%d\r\n\r\n", port)
+		fmt.Fprintf(conn, "GET /get HTTP/1.0\r\nHost: localhost:%d\r\n\r\n", port)
 
 		close(ready)
 	}()

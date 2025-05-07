@@ -84,7 +84,7 @@ func (response *HttpResponse) Json(json string) *HttpResponse {
 	return response
 }
 
-// Convierte la respuesta HTTP a su representación en formato de cadena HTTP/1.1.
+// Convierte la respuesta HTTP a su representación en formato de cadena HTTP/1.0.
 // Calcula automáticamente la cabecera Content-Length.
 func (response *HttpResponse) String() string {
 	// Calcula y establece la longitud del contenido.
@@ -103,7 +103,7 @@ func (response *HttpResponse) String() string {
 	}
 
 	// Construye la cadena de respuesta HTTP completa.
-	return fmt.Sprintf("HTTP/1.1 %d %s\r\n%s\r\n%s", response.StatusCode, response.StatusText, headersStr, response.Body)
+	return fmt.Sprintf("HTTP/1.0 %d %s\r\n%s\r\n%s", response.StatusCode, response.StatusText, headersStr, response.Body)
 }
 
 func (response *HttpResponse) WriteResponse(conn net.Conn) error {

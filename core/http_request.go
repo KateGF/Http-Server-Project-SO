@@ -121,7 +121,7 @@ func ParseRequest(headersPart string) (*HttpRequest, error) {
 		return nil, fmt.Errorf("no start line")
 	}
 
-	// Parsea la línea de inicio (ej: "GET /path HTTP/1.1")
+	// Parsea la línea de inicio (ej: "GET /path HTTP/1.0")
 	start := strings.SplitN(lines[0], " ", 3)
 	if len(start) < 2 {
 		return nil, fmt.Errorf("no method or target")
