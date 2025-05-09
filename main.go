@@ -2,6 +2,7 @@ package main
 
 import (
 	"httpserver/core"
+	"httpserver/handlers"
 	"httpserver/service"
 	"log/slog"
 )
@@ -18,6 +19,10 @@ func main() {
 
 	// Registra un manejador para la ruta DELETE "/deletefile".
 	server.Delete("/deletefile", service.DeleteFileHandler)
+	// Endpoints de cadenas
+	server.Get("/reverse", handlers.ReverseHandler)
+	server.Get("/toupper", handlers.ToUpperHandler)
+	server.Get("/hash", handlers.HashHandler)
 
 	// Inicia el servidor en el puerto 8080.
 	err := server.Start(8080)

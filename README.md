@@ -76,4 +76,10 @@ Para generar un informe de cobertura de pruebas:
 make coverage
 ```
 
+Para correr las pruebas de integración se usa el siguiente comando:
+
+```bash
+go test -timeout 30s -run Integration 
+```
+
 Esto ejecutará las pruebas, generará un archivo `coverage.out` y creará un informe HTML `coverage.html` que puedes abrir en tu navegador para ver la cobertura detallada.
