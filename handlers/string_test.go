@@ -32,7 +32,8 @@ func TestToUpper(t *testing.T) {
 func TestHash(t *testing.T) {
 	res, _ := HashHandler(makeReq("GET", "/hash?text=abc"))
 	// SHA256("abc") = "..."
-	want := "..." // pon aquí el valor literal
+	want := "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+
 	if res.Body != want {
 		t.Errorf("Hash incorrecto: got %q, want %q", res.Body, want)
 	}

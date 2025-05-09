@@ -2,6 +2,7 @@ package router
 
 import (
 	"httpserver/core"
+	"sort"
 	"strings"
 )
 
@@ -57,4 +58,16 @@ func (r *Router) Handle(req *core.HttpRequest) (*core.HttpResponse, error) {
 		}
 	}
 	return core.NotFound().Text("no route"), nil
+}
+
+// SortHandlers ordena las rutas por número de segmentos (‘/’) y luego por longitud.
+func (r *Router) SortHandlers() {
+	sort.Slice(r.routes, func(i, j int) bool {
+		ic := strings.Count(r.routes[i].Path, "/")
+		jc := strings.Count(r.routes[j].Path, "/")
+		if ic != jc {
+			return ic > jc
+		}
+		return len(r.routes[i].Path) > len(r.routes[j].Path)
+	})
 }
