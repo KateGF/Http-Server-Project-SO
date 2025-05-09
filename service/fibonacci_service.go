@@ -1,9 +1,9 @@
-package main
+package service
 
-import "strconv"
-
-// Almacena los números de Fibonacci ya calculados para evitar recálculos.
-var memo = map[int]int{}
+import (
+	"httpserver/core"
+	"strconv"
+)
 
 // Calcula el n-ésimo número de Fibonacci utilizando recursión con memoización.
 func Fibonacci(num int) int {
@@ -15,25 +15,22 @@ func Fibonacci(num int) int {
 		return 1
 	}
 
-	// Verifica si el resultado ya está en la caché (memoización).
-	if v, exists := memo[num]; exists {
-		return v
+	a, b := 0, 1
+	for i := 2; i <= num; i++ {
+		a, b = b, a+b
 	}
 
-	// Si no está en caché, calcula recursivamente, almacena en caché y retorna.
-	memo[num] = Fibonacci(num-1) + Fibonacci(num-2)
-
-	return memo[num]
+	return b
 }
 
 // Extrae el parámetro 'num' de la consulta, calcula el número de Fibonacci correspondiente y retorna la respuesta HTTP.
-func FibonacciHandler(request *HttpRequest) (*HttpResponse, error) {
+func FibonacciHandler(request *core.HttpRequest) (*core.HttpResponse, error) {
 	// Obtiene el valor del parámetro 'num' de la URL query.
 	numStr := request.Target.Query().Get("num")
 
 	// Valida si el parámetro 'num' está presente.
 	if numStr == "" {
-		return BadRequest().Text("num is required"), nil
+		return core.BadRequest().Text("num is required"), nil
 	}
 
 	// Convierte el parámetro 'num' de string a entero.
@@ -41,18 +38,18 @@ func FibonacciHandler(request *HttpRequest) (*HttpResponse, error) {
 
 	// Valida si la conversión fue exitosa.
 	if err != nil {
-		return BadRequest().Text("num must be a number"), nil
+		return core.BadRequest().Text("num must be a number"), nil
 	}
 
 	// Valida si el número está dentro del rango permitido (0 a 92).
 	// El límite 92 se debe a que Fibonacci(93) excede el máximo valor de int64.
 	if num < 0 || num > 92 {
-		return BadRequest().Text("num must be between 0 and 92"), nil
+		return core.BadRequest().Text("num must be between 0 and 92"), nil
 	}
 
 	// Calcula el número de Fibonacci usando la función optimizada.
 	v := Fibonacci(num)
 
 	// Crea una respuesta HTTP 200 OK con el resultado como texto plano.
-	return Ok().Text(strconv.Itoa(v)), nil
+	return core.Ok().Text(strconv.Itoa(v)), nil
 }

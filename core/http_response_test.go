@@ -1,4 +1,4 @@
-package main
+package core
 
 import (
 	"net"
@@ -28,7 +28,7 @@ func TestHttpResponse(t *testing.T) {
 		t.Errorf("Expected body to be Content, not %s", response.Body)
 	}
 
-	expected := "HTTP/1.1 418 I'm a teapot\r\nContent-Length: 7\r\n\r\nContent"
+	expected := "HTTP/1.0 418 I'm a teapot\r\nContent-Length: 7\r\n\r\nContent"
 
 	if message != expected {
 		t.Errorf("Expected message to be %s, not %s", expected, message)
@@ -52,7 +52,7 @@ func TestHttpResponseNotFound(t *testing.T) {
 		t.Errorf("Expected body to be empty, not %s", response.Body)
 	}
 
-	expected := "HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\n\r\n"
+	expected := "HTTP/1.0 404 Not Found\r\nContent-Length: 0\r\n\r\n"
 
 	if response.String() != expected {
 		t.Errorf("Expected message to be %s, not %s", expected, response.String())
@@ -68,7 +68,7 @@ func TestHttpResponseText(t *testing.T) {
 		t.Errorf("Expected body to be Text, not %s", response.Body)
 	}
 
-	expected := "HTTP/1.1 200 OK\r\nContent-Length: 4\r\nContent-Type: text/plain\r\n\r\nText"
+	expected := "HTTP/1.0 200 OK\r\nContent-Length: 4\r\nContent-Type: text/plain\r\n\r\nText"
 
 	if response.String() != expected {
 		t.Errorf("Expected message to be %s, not %s", expected, response.String())
@@ -84,7 +84,7 @@ func TestHttpResponseJson(t *testing.T) {
 		t.Errorf("Expected body to be {\"k\": \"v\"}, not %s", response.Body)
 	}
 
-	expected := "HTTP/1.1 200 OK\r\nContent-Length: 10\r\nContent-Type: application/json\r\n\r\n{\"k\": \"v\"}"
+	expected := "HTTP/1.0 200 OK\r\nContent-Length: 10\r\nContent-Type: application/json\r\n\r\n{\"k\": \"v\"}"
 
 	if response.String() != expected {
 		t.Errorf("Expected message to be %s, not %s", expected, response.String())
@@ -114,7 +114,7 @@ func TestHttpResponseWriteResponse(t *testing.T) {
 
 	message := string(buffer[:n])
 
-	expected := "HTTP/1.1 200 OK\r\nContent-Length: 0\r\n\r\n"
+	expected := "HTTP/1.0 200 OK\r\nContent-Length: 0\r\n\r\n"
 
 	if message != expected {
 		t.Errorf("Expected message to be %s, not %s", expected, message)

@@ -1,19 +1,23 @@
 package main
 
-import "log/slog"
+import (
+	"httpserver/core"
+	"httpserver/service"
+	"log/slog"
+)
 
 func main() {
 	// Crea una nueva instancia del servidor HTTP.
-	server := NewHttpServer()
+	server := core.NewHttpServer()
 
 	// Registra un manejador para la ruta GET "/fibonacci".
-	server.Get("/fibonacci", FibonacciHandler)
+	server.Get("/fibonacci", service.FibonacciHandler)
 
 	// Registra un manejador para la ruta POST "/createfile".
-	server.Post("/createfile", CreateFileHandler)
+	server.Post("/createfile", service.CreateFileHandler)
 
 	// Registra un manejador para la ruta DELETE "/deletefile".
-	server.Delete("/deletefile", DeleteFileHandler)
+	server.Delete("/deletefile", service.DeleteFileHandler)
 
 	// Inicia el servidor en el puerto 8080.
 	err := server.Start(8080)

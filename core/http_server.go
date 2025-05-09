@@ -1,4 +1,4 @@
-package main
+package core
 
 import (
 	"errors"
@@ -189,8 +189,13 @@ func (server *HttpServer) Handle(conn net.Conn) error {
 		// Llama a la función Handle asociada al manejador.
 		response, err := handler.Handle(request)
 		if err != nil {
-			// Podríamos enviar una respuesta 500 aquí, pero por ahora devolvemos el error.
-			return err
+			// Si hay un error, crea una respuesta 500 Internal Server Error.
+			response = &HttpResponse{
+				StatusCode: 500,
+				StatusText: "Internal Server Error",
+				Headers:    map[string]string{},
+				Body:       "500 Internal Server Error",
+			}
 		}
 
 		// Escribe la respuesta generada por el manejador en la conexión.

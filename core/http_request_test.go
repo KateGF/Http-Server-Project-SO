@@ -1,4 +1,4 @@
-package main
+package core
 
 import (
 	"fmt"
@@ -13,7 +13,7 @@ func TestReadRequestPass(t *testing.T) {
 	defer conn2.Close()
 
 	go func() {
-		conn1.Write([]byte("GET / HTTP/1.1\r\nContent-Length: 7\r\nSkip\r\n: Skip\r\n\r\nContent"))
+		conn1.Write([]byte("GET / HTTP/1.0\r\nContent-Length: 7\r\nSkip\r\n: Skip\r\n\r\nContent"))
 		conn1.Close()
 	}()
 
@@ -52,9 +52,15 @@ var RejectReadRequestTests = []string{
 	// can't parse request
 	"\r\n\r\n",
 	// bad content length format
-	"GET / HTTP/1.1\r\nContent-Length: A\r\n\r\nContent",
+	"GET / HTTP/1.0\r\nContent-Length: A\r\n\r\nContent",
 	// can't read body
-	"GET / HTTP/1.1\r\nContent-Length: 7\r\n\r\n",
+	"GET / HTTP/1.0\r\nContent-Length: 7\r\n\r\n",
+	// post request without content length
+	"POST / HTTP/1.0\r\n\r\n",
+	// bad method
+	"BAD / HTTP/1.0\r\n\r\n",
+	// bad version
+	"GET / HTTP/0.0\r\n\r\n",
 }
 
 func TestReadRequestReject(t *testing.T) {
@@ -87,15 +93,15 @@ func TestReadRequestReject(t *testing.T) {
 
 var RejectParseRequestTests = []string{
 	// no header end
-	"GET / HTTP/1.1\r\n",
+	"GET / HTTP/1.0\r\n",
 	// no start line
 	"\r\n\r\n",
 	// no method or target
-	"HTTP/1.1\r\n\r\n",
+	"HTTP/1.0\r\n\r\n",
 	// no target
 	"GET\r\n\r\n",
 	// bad target format
-	"GET : HTTP/1.1\r\n\r\n",
+	"GET : HTTP/1.0\r\n\r\n",
 }
 
 func TestParseRequestReject(t *testing.T) {

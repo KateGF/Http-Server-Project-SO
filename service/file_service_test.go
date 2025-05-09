@@ -1,7 +1,8 @@
-package main
+package service
 
 import (
 	"fmt"
+	"httpserver/core"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -31,6 +32,7 @@ func TestCreateFileHandler(t *testing.T) {
 		{"temp/test.txt", "name=temp/test.txt&content=A&repeat=10", "AAAAAAAAAA", true, func() {
 			os.WriteFile("temp/test.txt", []byte("test"), os.ModePerm)
 		}},
+		{"../temp/test.txt", "name=../test.txt&content=A&repeat=10", "", true, nil},
 	}
 
 	for i, tt := range tests {
@@ -44,10 +46,7 @@ func TestCreateFileHandler(t *testing.T) {
 
 			// Arrange
 			target, _ := url.Parse(fmt.Sprintf("/createfile?%s", tt.query))
-			request := &HttpRequest{
-				Method: "POST",
-				Target: target,
-			}
+			request := core.NewHttpRequest("POST", target, map[string]string{}, "")
 
 			// Act
 			response, _ := CreateFileHandler(request)
@@ -92,6 +91,7 @@ func TestDeleteFileHandler(t *testing.T) {
 		}},
 		{"temp/test.txt", "", true, nil},
 		{"temp/test.txt", "name=temp/test.txt", true, nil},
+		{"../temp/test.txt", "name=../test.txt", true, nil},
 	}
 
 	for i, tt := range tests {
@@ -105,10 +105,7 @@ func TestDeleteFileHandler(t *testing.T) {
 
 			// Arrange
 			target, _ := url.Parse(fmt.Sprintf("/deletefile?%s", tt.query))
-			request := &HttpRequest{
-				Method: "DELETE",
-				Target: target,
-			}
+			request := core.NewHttpRequest("DELETE", target, map[string]string{}, "")
 
 			// Act
 			response, _ := DeleteFileHandler(request)
