@@ -1,6 +1,7 @@
 package core
 
 import (
+	"encoding/json"
 	"fmt"
 	"log/slog"
 	"net"
@@ -115,4 +116,20 @@ func (response *HttpResponse) WriteResponse(conn net.Conn) error {
 	}
 
 	return nil
+
+}
+
+// JsonObj serializa v a JSON y lo pone en el body con application/json.
+func (r *HttpResponse) JsonObj(v interface{}) *HttpResponse {
+	data, err := json.Marshal(v)
+	if err != nil {
+		// Construyo la respuesta 500 y luego le pongo el Content-Type.
+		resp := NewHttpResponse(500, "Internal Server Error", "json marshal error")
+		resp.SetContentType("text/plain")
+		return resp
+	}
+	// En el caso normal, reutilizo 'r'.
+	r.SetContentType("application/json")
+	r.SetBody(string(data))
+	return r
 }
