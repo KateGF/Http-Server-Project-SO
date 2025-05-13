@@ -25,6 +25,7 @@ func main() {
 	server.Get("/reverse", handlers.ReverseHandler)
 	server.Get("/toupper", handlers.ToUpperHandler)
 	server.Get("/hash", handlers.HashHandler)
+	server.Get("/", handlers.RootHandler)
 
 	// Endpoints avanzados
 	server.Get("/random", advanced.RandomHandler)

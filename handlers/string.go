@@ -47,3 +47,8 @@ func HashHandler(req *core.HttpRequest) (*core.HttpResponse, error) {
 	sum := sha256.Sum256([]byte(text))
 	return core.Ok().Text(hex.EncodeToString(sum[:])), nil
 }
+
+// / (ruta raíz)
+func RootHandler(req *core.HttpRequest) (*core.HttpResponse, error) {
+	return core.Ok().Text("¡Servidor HTTP activo! Rutas disponibles: /reverse, /toupper, /hash"), nil
+}

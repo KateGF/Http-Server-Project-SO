@@ -38,3 +38,21 @@ func TestHash(t *testing.T) {
 		t.Errorf("Hash incorrecto: got %q, want %q", res.Body, want)
 	}
 }
+
+func TestRoot(t *testing.T) {
+	res, _ := RootHandler(makeReq("GET", "/"))
+	expected := "Servidor HTTP activo. Rutas disponibles:\n" +
+		"GET  /reverse?text=...\n" +
+		"GET  /toupper?text=...\n" +
+		"GET  /hash?text=...\n" +
+		"GET  /timestamp\n" +
+		"GET  /random?count=n&min=a&max=b\n" +
+		"GET  /simulate?seconds=s&task=name\n" +
+		"GET  /sleep?seconds=s\n" +
+		"GET  /loadtest?tasks=n&sleep=s\n" +
+		"GET  /status\n" +
+		"GET  /help"
+	if res.Body != expected {
+		t.Errorf("RootHandler incorrecto: got %q, want %q", res.Body, expected)
+	}
+}
