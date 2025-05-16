@@ -170,7 +170,10 @@ func (server *HttpServer) Handle(conn net.Conn) error {
 	// Lee y parsea la solicitud HTTP de la conexión.
 	request, err := ReadRequest(conn)
 	if err != nil {
-		return err
+		// En lugar de cerrar sin responder, devolvemos 400 Bad Request con el mensaje de error
+		resp := BadRequest().Text(err.Error())
+		resp.WriteResponse(conn)
+		return nil
 	}
 
 	slog.Info("Request", "address", conn.RemoteAddr().String(), "method", request.Method, "path", request.Target.Path)

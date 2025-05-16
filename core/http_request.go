@@ -144,7 +144,7 @@ func ParseRequest(headersPart string) (*HttpRequest, error) {
 	version := start[2]
 
 	// Comprueba si la versión es válida
-	if version != "HTTP/1.0" {
+	if version != "HTTP/1.0" && version != "HTTP/1.1" {
 		return nil, fmt.Errorf("bad version: %s", version)
 	}
 
