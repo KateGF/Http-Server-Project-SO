@@ -76,7 +76,7 @@ INFO Server started address=[::]:8080
 ### Probar funcionalidades con curl
 ```
 # 1. /help
-tcurl -i http://localhost:8080/help
+curl -i http://localhost:8080/help
 
 # 2. /status
 curl -i http://localhost:8080/status
@@ -114,6 +114,18 @@ curl -i "http://localhost:8080/simulate?seconds=3&task=miTarea"
 curl -i "http://localhost:8080/loadtest?tasks=10&sleep=1"
 ```
 
+### Pruebas de error
+```
+# Parámetros faltantes -> Bad Request
+curl -i http://localhost:8080/fibonacci
+
+# Método no soportado -> Bad Request
+curl -i -X POST http://localhost:8080/reverse?text=hola
+
+# Ruta no existente -> Not Found
+curl -i http://localhost:8080/no_such_route
+```
+
 ### Ejecutar pruebas y medir cobertura
 
 1. Pruebas unitarias y de integración:
@@ -125,3 +137,4 @@ go test ./... -timeout 30s -coverprofile=coverage
 ```bash
 (go tool cover -func=coverage) | Select-String total:
 ```
+Muestra un porcentaje > 90%.
