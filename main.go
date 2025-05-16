@@ -15,11 +15,15 @@ func main() {
 	// Registra un manejador para la ruta GET "/fibonacci".
 	server.Get("/fibonacci", service.FibonacciHandler)
 
-	// Registra un manejador para la ruta POST "/createfile".
+	// Registra un manejador para POST "/createfile"
 	server.Post("/createfile", service.CreateFileHandler)
+	// También exponer "/createfile" por GET para pruebas manuales sin body.
+	server.Get("/createfile", service.CreateFileHandler)
 
-	// Registra un manejador para la ruta DELETE "/deletefile".
+	// Registra un manejador para DELETE "/deletefile"
 	server.Delete("/deletefile", service.DeleteFileHandler)
+	// También exponer "/deletefile" por GET para pruebas manuales sin body.
+	server.Get("/deletefile", service.DeleteFileHandler)
 
 	// Endpoints de cadenas
 	server.Get("/reverse", handlers.ReverseHandler)
