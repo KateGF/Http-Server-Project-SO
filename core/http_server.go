@@ -178,61 +178,40 @@ func (server *HttpServer) Handle(conn net.Conn) error {
 
 	slog.Info("Request", "address", conn.RemoteAddr().String(), "method", request.Method, "path", request.Target.Path)
 
-	// Bandera para saber si la solicitud fue manejada.
-	handled := false
-
-	// Itera sobre los manejadores registrados (ya ordenados).
+	// Dispatch con detección de método incorrecto
+	var pathMatched bool
 	for _, handler := range server.Handlers {
-		// Comprueba si el método y la ruta coinciden.
-		if request.Method != handler.Method || !MatchPath(request.Target.Path, handler.Path) {
-			// Pasa al siguiente manejador si no coincide.
+		if !MatchPath(request.Target.Path, handler.Path) {
 			continue
 		}
-
-		// Llama a la función Handle asociada al manejador.
-		response, err := handler.Handle(request)
+		// La ruta existe
+		pathMatched = true
+		if request.Method != handler.Method {
+			// Método no soportado en esta ruta
+			continue
+		}
+		
+		// Método y ruta coinciden → ejecutar handler
+		resp, err := handler.Handle(request)
 		if err != nil {
-			// Si hay un error, crea una respuesta 500 Internal Server Error.
-			response = &HttpResponse{
+			resp = &HttpResponse{
 				StatusCode: 500,
 				StatusText: "Internal Server Error",
 				Headers:    map[string]string{},
 				Body:       "500 Internal Server Error",
 			}
 		}
-
-		// Escribe la respuesta generada por el manejador en la conexión.
-		err = response.WriteResponse(conn)
-		if err != nil {
-			return err
-		}
-
-		// Marca la solicitud como manejada.
-		handled = true
-		// Deja de buscar manejadores una vez que uno coincide.
-		break
-	}
-
-	// La conexión se manejó correctamente.
-	if handled {
+		_ = resp.WriteResponse(conn)
 		return nil
 	}
-
-	// Si ningún manejador coincidió con la solicitud.
-	// Crea una respuesta 404 Not Found.
-	response := &HttpResponse{
-		StatusCode: 404,
-		StatusText: "Not Found",
-		Headers:    map[string]string{},
-		Body:       "404 Not Found",
+	
+	if pathMatched {
+		// Ruta conocida + método incorrecto → 400 Bad Request
+		_ = BadRequest().Text("Bad method").WriteResponse(conn)
+		return nil
 	}
-
-	// Escribe la respuesta 404 en la conexión.
-	err = response.WriteResponse(conn)
-	if err != nil {
-		return err
-	}
-
-	// Se envió un 404.
+	
+	// Ruta desconocida → 404 Not Found
+	_ = NotFound().Text("404 Not Found").WriteResponse(conn)
 	return nil
 }

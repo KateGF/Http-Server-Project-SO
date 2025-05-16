@@ -18,6 +18,11 @@ import (
 // - Crea el archivo con el contenido repetido el número de veces especificado.
 // - Crea el archivo con el nombre especificado.
 func CreateFile(filename string, content string, repeat int) error {
+	// Validar repeat positivo
+	if repeat < 1 {
+		return fmt.Errorf("repeat must be greater than 0")
+	}
+	
 	// Obtener el directorio actual
 	wd, _ := os.Getwd()
 

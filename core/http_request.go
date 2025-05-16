@@ -88,14 +88,16 @@ func ReadRequest(conn net.Conn) (*HttpRequest, error) {
 		return nil, fmt.Errorf("can't parse request: %w", err)
 	}
 
-	// Parsea el cuerpo de la solicitud si existe Content-Length
-	if _, ok := request.Headers["Content-Length"]; ok {
-			if err := ParseBody(request, reader); err != nil {
-					return nil, err
-			}
-	} else {
-			// No hubo Content-Length: dejamos Body vacío y seguimos adelante
-			request.Body = ""
+	// Si el método es POST, exige Content-Length
+	if request.Method == "POST" {
+		if _, ok := request.Headers["Content-Length"]; !ok {
+			return nil, fmt.Errorf("post request without content length")
+		}
+	}
+	
+	// Parsea el cuerpo de la solicitud si Content-Length existe (o body vacío en otro caso)
+	if err := ParseBody(request, reader); err != nil {
+		return nil, err
 	}
 
 	return request, nil
