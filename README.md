@@ -116,14 +116,17 @@ curl -i "http://localhost:8080/loadtest?tasks=10&sleep=1"
 
 ### Pruebas de error
 ```
-# Parámetros faltantes -> Bad Request
+# Parámetros faltantes -> Bad Request (400)
 curl -i http://localhost:8080/fibonacci
 
-# Método no soportado -> Bad Request
+# Método no soportado -> Bad Request (400)
 curl -i -X POST http://localhost:8080/reverse?text=hola
 
-# Ruta no existente -> Not Found
+# Ruta no existente -> Not Found (404)
 curl -i http://localhost:8080/no_such_route
+
+# Internal Server Error -> (500)
+curl -i "http://localhost:8080/deletefile/?name=noexiste.txt"
 ```
 
 ### Ejecutar pruebas y medir cobertura
