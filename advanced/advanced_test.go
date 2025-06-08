@@ -2,7 +2,7 @@ package advanced
 
 import (
 	"encoding/json"
-	"httpserver/core"
+	"github.com/KateGF/Http-Server-Project-SO/core"
 	"net/url"
 	"testing"
 	"time"

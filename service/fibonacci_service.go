@@ -1,7 +1,7 @@
 package service
 
 import (
-	"httpserver/core"
+	"github.com/KateGF/Http-Server-Project-SO/core"
 	"strconv"
 )
 

@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"httpserver/core"
+	"github.com/KateGF/Http-Server-Project-SO/core"
 	"net/url"
 	"testing"
 )

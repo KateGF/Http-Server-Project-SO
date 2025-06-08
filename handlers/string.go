@@ -3,7 +3,7 @@ package handlers
 import (
     "crypto/sha256"
     "encoding/hex"
-    "httpserver/core"
+    "github.com/KateGF/Http-Server-Project-SO/core"
     "strings"
 )
 

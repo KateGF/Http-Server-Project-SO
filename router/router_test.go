@@ -3,8 +3,7 @@ package router
 import (
 	"net/url"
 	"testing"
-
-	"httpserver/core"
+	"github.com/KateGF/Http-Server-Project-SO/core"
 )
 
 // makeReq construye un core.HttpRequest para pruebas.

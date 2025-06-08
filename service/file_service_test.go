@@ -2,7 +2,7 @@ package service
 
 import (
 	"fmt"
-	"httpserver/core"
+	"github.com/KateGF/Http-Server-Project-SO/core"
 	"net/url"
 	"os"
 	"path/filepath"

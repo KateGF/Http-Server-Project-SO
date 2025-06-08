@@ -1,7 +1,7 @@
 package router
 
 import (
-	"httpserver/core"
+	"github.com/KateGF/Http-Server-Project-SO/core"
 	"sort"
 	"strings"
 )

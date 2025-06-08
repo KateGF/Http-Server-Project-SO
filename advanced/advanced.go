@@ -10,7 +10,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"httpserver/core"
+	"github.com/KateGF/Http-Server-Project-SO/core"
 )
 
 var (

@@ -1,10 +1,10 @@
 package main
 
 import (
-	"httpserver/advanced"
-	"httpserver/core"
-	"httpserver/handlers"
-	"httpserver/service"
+	"github.com/KateGF/Http-Server-Project-SO/advanced"
+	"github.com/KateGF/Http-Server-Project-SO/core"
+	"github.com/KateGF/Http-Server-Project-SO/handlers"
+	"github.com/KateGF/Http-Server-Project-SO/service"
 	"log/slog"
 )
 

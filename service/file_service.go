@@ -3,7 +3,7 @@ package service
 import (
 	"bufio"
 	"fmt"
-	"httpserver/core"
+	"github.com/KateGF/Http-Server-Project-SO/core"
 	"log/slog"
 	"os"
 	"path/filepath"
